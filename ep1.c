@@ -1,22 +1,62 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-typedef struct lista {
-	char palavra[50];
-	struct lista *proximo;
-} Lista;
-
-typedef struct {
-	Lista * lista;
-} Inicio;
-
+#include "funcoes.h"
 
 int main(){
 	Inicio lista;
+	FILE *arq;
+	char linha[1000];
+
+	arq = fopen("texto.txt", "r");
+	if(arq == NULL){
+		printf("Arquivo 'texto.txt' não encontrado.\n");
+		return 1;
+	}
+
+	//while(fgets(linha, 1000, arq)){
+	//	printf(linha);
+	//}
+	fgets(linha,1000,arq);
+	linhaEmLista(linha, &lista, 0);
+	fclose(arq);
+	printLista(lista.lista[0]);
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*	Inicio lista;
 	lista.lista = (Lista*) malloc(sizeof(Lista));
 	FILE *arq;
-	char Linha[100];
+	char Linha[500];
 	char *result;
 	int i=1;
 
@@ -25,19 +65,19 @@ int main(){
 		printf("arquivo texto.txt não encontrado.\n");
 		return 1;
 	}
-	result = fgets(Linha, 100, arq);
+	result = fgets(Linha, 500, arq);
 	if (result){
 		printf("Linha %d: %s", i, Linha);
 	}
 	i=0;
 	int j=0;
 	Lista *atual = lista.lista;
-	for(char c=Linha[0], temp[50]; c!='\n';i++){
-		c = Linha[i];
+	for(char temp[50]; i<500;i++){
+		char c = Linha[i];
 		if(c >= 65 && c <= 90){
 			c=c+32;
 		}
-		if(c != ' ' && c != ',' && c != '.' && c != '-' && c != '!' && c != '?'){
+		if(c != ' ' && c != ',' && c != '.' && c != '-' && c != '!' && c != '?' && c != '\0'){
 			temp[j] = c;
 			j++;
 		}
@@ -52,6 +92,9 @@ int main(){
 				temp[h]='\0';
 			}
 			atual->proximo = NULL;
+			if(Linha[i] =='\0'){
+				break;
+			}
 			while(c == ' ' || c == ',' || c == '.' || c == '-' || c == '!' || c == '?'){
 				i++;
 				c = Linha[i];
@@ -65,4 +108,4 @@ int main(){
 		atual = atual->proximo;
 	}
 	fclose(arq);
-}
+}*/
