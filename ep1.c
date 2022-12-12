@@ -5,6 +5,7 @@
 
 int main(){
 	Inicio lista;
+	int linhas = 0;
 	FILE *arq;
 	char linha[1000];
 
@@ -14,13 +15,16 @@ int main(){
 		return 1;
 	}
 
-	//while(fgets(linha, 1000, arq)){
-	//	printf(linha);
-	//}
-	fgets(linha,1000,arq);
-	linhaEmLista(linha, &lista, 0);
+	while(fgets(linha, 1000, arq)){
+		linhaEmLista(linha, &lista, linhas);
+		linhas++;
+	}
 	fclose(arq);
-	printLista(lista.lista[0]);
+	printf("\n");
+	for (int i=0; i<linhas; i++){
+		printLista(lista.lista[i]);
+		printf("\n");
+	}
 	return 0;
 }
 

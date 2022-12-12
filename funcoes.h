@@ -19,23 +19,22 @@ void linhaEmLista(char linha[], Inicio * lista, int numLinha){
 		if (c >= 65 && c <= 90){
 			c=c+32;
 		}
-		if (c==' '||c==','||c=='.'||c=='-'||c=='!'||c=='?'||c=='\0'){
-			int size = (int) strlen(palavra);
-			size++;
-			atual->palavra = (char*) malloc(size*sizeof(char));
-			for (int g=0; g<size; g++){
-				atual->palavra[g] = palavra[g];
-				palavra[g] = '\0';
+		if (c==' '||c==','||c=='.'||c=='-'||c=='!'||c=='?'||c=='\n'||c=='/'){
+			if(strlen(palavra)>0){
+				int size = (int) strlen(palavra);
+				size++;
+				atual->palavra = (char*) malloc(size*sizeof(char));
+				for (int g=0; g<size; g++){
+					atual->palavra[g] = palavra[g];
+					palavra[g] = '\0';
+				}
+				atual->proximo = (Lista*) malloc(sizeof(Lista));
+				atual = atual->proximo;
+				atual->proximo = NULL;
 			}
-			atual->proximo = (Lista*) malloc(sizeof(Lista));
-			atual = atual->proximo;
-			atual->proximo = NULL;
-			while(c==' '||c==','||c=='.'||c=='-'||c=='!'||c=='?'){
-				i++;
-				c = linha[i];
+			else{
+				palavra[0] = '\0';
 			}
-			i--;
-			c = linha[i];
 		}
 		else{
 			strncat(palavra, &c, 1);
