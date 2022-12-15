@@ -52,84 +52,34 @@ int getText(Texto *texto, FILE *arq){
 void linhaEmLista(char linha[], Inicio * lista, int numLinha){
 	Lista * atual; 
 	atual = lista->lista;
-	lista->lista->existeProximo = 0;
+	static int doOnce=0;
+	if(!doOnce){
+		lista->lista->existeProximo = 0;
+		doOnce++;
+	}
 	char palavra[50];
-	char c;
-	/*for (int i=0; c != '\n'; i++){
-		c = linha[i];
-	printf("3");
-		if (c >= 65 && c <= 90){
-			c=c+32;
+	for(int i=0; i<50;i++){
+		palavra[i] = '\0';
+	}
+	char c='\0';
+	for(int i=0; c!='\n';i++){
+		c=linha[i];
+		if(c>64 && c<91){
+			c+=32;
 		}
-	printf("4");
-		if (c==' '||c==','||c=='.'||c=='-'||c=='!'||c=='?'||c=='\n'||c=='/'){
-	printf("5");
-			if(strlen(palavra)>0){
-				int size = (int) strlen(palavra);
-				size++;
-	printf("6");
-				if(atual->existeProximo == 0){
-					atual->proximo = (Lista*) malloc(sizeof(Lista));
-					atual->existeProximo = 1;
-					atual = atual->proximo;
-					atual->existeProximo = 0;
-					atual->numLinhas = 0;
-					atual->palavra = (char *) malloc(size*sizeof(char));
-				}
-				else{
-	printf("7");
-					if(strcmp(atual->proximo->palavra,palavra)>0){
-						Lista * reserva = atual->proximo;
-						atual->proximo = (Lista *) malloc(sizeof(Lista));
-						atual = atual->proximo;
-						atual->palavra = (char *) malloc(size*sizeof(char));
-						atual->proximo = reserva;
-						atual->existeProximo = 1;
-					}
-					else{
-						atual = atual->proximo;
-					}
-				}
-	printf("8");
-				if(strlen(atual->palavra)>0 || strcmp(atual->palavra,palavra) == 0){
-					atual->numLinhas++;
-					int i[atual->numLinhas];
-					int alerta = 0;
-	printf("9");
-					for(int z=0; z<atual->numLinhas-1; z++){
-						if(atual->linhas[z] == numLinha) alerta=1;
-						i[z] = atual->linhas[z];
-					}
-	printf("10");
-					if(alerta){
-					       	atual->numLinhas--;
-					}
-					else{
-						i[atual->numLinhas-1] = numLinha;
-					}
-					free(atual->linhas);
-					atual->linhas = (int*) malloc(atual->numLinhas*sizeof(int));
-					for(int z=0; z<atual->numLinhas; z++){
-						atual->linhas[z] = i[z];
-					}
-
-					for(int g=0;g<size;g++){
-						atual->palavra[g] = palavra[g];
-						palavra[g] = '\0';
-					}
-					atual->proximo = (Lista*) malloc(sizeof(Lista));
-					atual = lista->lista;
-				}
+		if(c<97 || c>122){
+			if(strlen(palavra)<1){
+				palavra[0]='\0';
 			}
 			else{
-				palavra[0] = '\0';
+				printf("%s\n",palavra);
+				for(int z=0;z<50;z++){
+					palavra[z]='\0';
+				}
 			}
 		}
 		else{
-			strncat(palavra, &c, 1);
+		strncat(palavra, &c, 1);
 		}
-		if(c == '\0'){
-			break;
-		}
-	}*/
+	}
 }
