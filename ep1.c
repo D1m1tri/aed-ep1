@@ -22,6 +22,6 @@ int main(){
 		linhaEmLista(texto.linha[i], &lista, i);
 	}
 	printf("\n");
-	//printAll(&texto, &lista, lineNum);
+	printAll(&texto, &lista, lineNum);
 	return 0;
 }

@@ -1,7 +1,13 @@
 #include <string.h>
+typedef struct linhas {	//linhas nas quais uma determinada palavra aparece
+	int linha;
+	int existeProximo;
+	struct linhas *proximo;
+} Linhas;
+
 typedef struct lista {	//argumentos armazenados nos elementos da lista
 	int numLinhas;	//quantidade de linhas em que a palavra aparece
-	int * linhas;	//linhas nas quais a palavra aparece
+	Linhas * linhas;	//linhas nas quais a palavra aparece
 	char *palavra;	//palavra (em lowercase)
 	struct lista *proximo;	//próxima palavra
 	int existeProximo;	//indica se existe uma próxima palavra
@@ -20,18 +26,83 @@ void printAll(Texto * texto, Inicio * lista, int lineNum){
 		printf("%02i: %s",i+1,texto->linha[i]);
 	}
 	Lista * atual = lista->lista;
-	while(atual->existeProximo != 0){
-		printf("%s	%i	",atual->palavra,atual->numLinhas);
-		for(int z=0; z<atual->numLinhas; z++){
-			printf("%i, ",atual->linhas[z]);
+	printf("\npalavra		aparições	linhas\n\n");
+	while(atual->existeProximo == 1){
+		atual = atual->proximo;
+		if(strlen(atual->palavra)<8){
+			printf("%s		    %i		",atual->palavra,atual->numLinhas);
+		}
+		else{
+			printf("%s	    %i		",atual->palavra,atual->numLinhas);
+		}
+		Linhas * linAtual = atual->linhas;
+		while(linAtual->existeProximo==1){
+			linAtual = linAtual->proximo;
+			printf("%i, ",linAtual->linha);
 		}
 		printf("\n");
 	}
-	printf("%s	%i	",atual->palavra,atual->numLinhas);
-	for(int z=0; z<atual->numLinhas; z++){
-		printf("%i, ",atual->linhas[z]);
-	}
 	printf("\n");
+}
+
+void InsertOnList(Lista * atual, char palavra[], int lineNum){
+	int size = strlen(palavra);
+	size++;
+	int doit=1;
+	while(doit){
+		if(atual->existeProximo==0){
+			atual->proximo = (Lista*) malloc(sizeof(Lista));
+			atual->existeProximo = 1;
+			atual = atual->proximo;
+			atual->linhas = (Linhas*) malloc(sizeof(Linhas));
+			atual->linhas->existeProximo = 0;
+			atual->existeProximo = 0;
+			atual->numLinhas = 0;
+			doit=0;
+		}else{
+		if(strcmp(atual->proximo->palavra,palavra)>0){
+			Lista * temp = atual->proximo;
+			atual->proximo = (Lista*) malloc(sizeof(Lista));
+			atual = atual->proximo;
+			atual->linhas = (Linhas*) malloc(sizeof(Linhas));
+			atual->linhas->existeProximo = 0;
+			atual->existeProximo = 1;
+			atual->numLinhas = 0;
+			atual->proximo = temp;
+			doit=0;
+		}else{
+		if(strcmp(atual->proximo->palavra,palavra) == 0){
+			atual = atual->proximo;
+			doit=0;
+		}else{
+		atual = atual->proximo;
+		}
+		}
+		}
+	}
+	if(atual->palavra == NULL){
+		atual->palavra = (char*) malloc(size*sizeof(char));
+	}
+	for(int i=0; i<size; i++){
+		atual->palavra[i] = palavra[i];
+	}
+	atual->numLinhas++;
+
+	Linhas * linhaAtual = atual->linhas;
+	int alert = 0;
+	while(linhaAtual->existeProximo == 1){
+		linhaAtual = linhaAtual->proximo;
+		if(linhaAtual->linha == lineNum){
+			alert = 1;
+		}
+	}
+	if(alert == 0){
+		linhaAtual->existeProximo = 1;
+		linhaAtual->proximo = (Linhas*) malloc(sizeof(Linhas));
+		linhaAtual = linhaAtual->proximo;
+		linhaAtual->linha = lineNum;
+		linhaAtual->existeProximo = 0;
+	}
 }
 
 int getText(Texto *texto, FILE *arq){
@@ -50,8 +121,6 @@ int getText(Texto *texto, FILE *arq){
 }
 
 void linhaEmLista(char linha[], Inicio * lista, int numLinha){
-	Lista * atual; 
-	atual = lista->lista;
 	static int doOnce=0;
 	if(!doOnce){
 		lista->lista->existeProximo = 0;
@@ -72,7 +141,7 @@ void linhaEmLista(char linha[], Inicio * lista, int numLinha){
 				palavra[0]='\0';
 			}
 			else{
-				printf("%s\n",palavra);
+				InsertOnList(lista->lista, palavra, numLinha);
 				for(int z=0;z<50;z++){
 					palavra[z]='\0';
 				}
