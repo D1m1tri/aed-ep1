@@ -43,7 +43,7 @@ int main(int argc, char ** argv){
 	}
 	tempo = Clock(0);
 	printf("Tempo para carregar o arquivo e construir o indice: %.2f ms\n", tempo);
-	//printf("\n");
-	//printAll(&texto, &lista, lineNum);
+	printf("\n");
+	printAll(&texto, &lista, lineNum);
 	return 0;
 }
