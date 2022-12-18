@@ -9,7 +9,7 @@ typedef struct linhas {	//linhas nas quais uma determinada palavra aparece
 } Linhas;
 
 typedef struct lista {	//argumentos armazenados nos elementos da lista
-	int numLinhas;	//quantidade de linhas em que a palavra aparece
+	int numLinhas;	//quantidade de vezes que a palavra aparece
 	Linhas * linhas;	//linhas nas quais a palavra aparece
 	char *palavra;	//palavra (em lowercase)
 	struct lista *proximo;	//próxima palavra
@@ -78,30 +78,34 @@ void printAll(Texto * texto, Inicio * lista, int lineNum){ //imprime tudo o que 
 	printf("\n");
 }
 
+
+void createList(Lista* atual, Lista* substituto){
+	atual->proximo = (Lista*) malloc(sizeof(Lista));
+	atual->existeProximo = 1;
+	atual=atual->proximo;
+	atual->linhas = (Linhas*) malloc(sizeof(Linhas));
+	atual->linhas->existeProximo = 0;
+	atual->existeProximo = 0;
+	if(substituto){
+		atual->existeProximo = 1;
+		atual->proximo = substituto;
+	}
+	atual->numLinhas = 0;
+}
+
 void InsertOnList(Lista * atual, char palavra[], int lineNum){ //insere uma palavra na lista ligada em ordem alfabética
 	int size = strlen(palavra);
 	size++;
 	int doit=1;
 	while(doit){
 		if(atual->existeProximo==0){
-			atual->proximo = (Lista*) malloc(sizeof(Lista));
-			atual->existeProximo = 1;
-			atual = atual->proximo;
-			atual->linhas = (Linhas*) malloc(sizeof(Linhas));
-			atual->linhas->existeProximo = 0;
-			atual->existeProximo = 0;
-			atual->numLinhas = 0;
+			createList(atual, NULL);
+			atual=atual->proximo;
 			doit=0;
 		}else{
 		if(strcmp(atual->proximo->palavra,palavra)>0){
-			Lista * temp = atual->proximo;
-			atual->proximo = (Lista*) malloc(sizeof(Lista));
-			atual = atual->proximo;
-			atual->linhas = (Linhas*) malloc(sizeof(Linhas));
-			atual->linhas->existeProximo = 0;
-			atual->existeProximo = 1;
-			atual->numLinhas = 0;
-			atual->proximo = temp;
+			createList(atual, atual->proximo);
+			atual=atual->proximo;
 			doit=0;
 		}else{
 		if(strcmp(atual->proximo->palavra,palavra) == 0){
@@ -266,7 +270,7 @@ No * encontra_pai(No * pai, No * no){
 		if(!strcmp(pai->esq->palavra, no->palavra) || !strcmp(pai->esq->palavra, no->palavra)) return pai;
 
 
-		aux = encontra_pai(raiz->esq, no);
+		aux = encontra_pai(pai->esq, no);
 		if(aux) return aux;
 
 		return encontra_pai(pai->dir, no);
