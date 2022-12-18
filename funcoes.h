@@ -1,5 +1,7 @@
 #include <string.h>
 #include <time.h>
+
+
 typedef struct linhas {	//linhas nas quais uma determinada palavra aparece
 	int linha;
 	int existeProximo;
@@ -21,6 +23,27 @@ typedef struct {	//base da lista ligada
 typedef struct {	//armazenar o texto de forma integral
 	char * linha[10000];
 } Texto;
+
+
+
+typedef struct _no_arvore_ {
+	int* linhas;
+	char* palavra;
+	int contador;
+	int posLivre;
+	struct _no_arvore_ * esq;
+	struct _no_arvore_ * dir;
+
+} No;
+
+typedef struct {
+
+	No * raiz;
+
+} Arvore;
+
+
+
 
 float Clock(int reset){ //função para medir o tempo
 	static clock_t startTime;
@@ -161,4 +184,92 @@ void linhaEmLista(char linha[], Inicio * lista, int numLinha){ //separação das
 		strncat(palavra, &c, 1);
 		}
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Arvore * cria_arvore(){
+	Arvore * arvore = (Arvore *) malloc (sizeof(Arvore));
+	arvore->raiz = NULL;	
+	return arvore;
+}
+
+No * busca_rec(No * no, char* palavra){
+
+	No * aux;
+	
+	if(no){
+
+		if(strcmp(no->palavra, palavra) == 0) return no;
+
+		aux = busca_rec(no->esq, palavra);
+		if(aux) return aux;
+	
+		return busca_rec(no->esq, palavra);
+
+	}
+
+	return NULL;
+}
+
+No * busca(Arvore * arvore, char* palavra){
+	
+	return busca_rec(arvore->raiz, palavra);	
+}
+
+void insere(Arvore * arvore, No * pai, char* palavra, int linha){
+
+	No* novo = (No *) malloc(sizeof(No));
+	
+	strcpy (novo->palavra, palavra);
+	novo->esq = novo->dir = NULL;
+
+	if(!busca(arvore, palavra)){
+		novo->contador = 1;
+		novo->posLivre = 0;
+		novo->linhas[novo->posLivre] = linha;
+		novo->posLivre++;
+
+		if(pai){
+
+			if(strcmp(pai->palavra, palavra) > 0){
+				novo->esq = pai->esq;
+				pai->esq = novo;
+			}
+			else{
+				novo->esq = pai->dir;
+				pai->dir = novo;
+			}
+		}
+		else{
+			novo->esq = arvore->raiz;
+			arvore->raiz = novo;
+		}
+	}
+	else{
+		novo = busca(arvore, palavra);
+		novo->contador++;
+		novo->linhas[novo->posLivre] = linha;
+		novo->posLivre++;
+	}
+	
+	
+}
+No * encontra_pai(No * pai, No * no){
+	
+	No* aux;
+
+	if(pai){
+
+		if(!strcmp(pai->esq->palavra, no->palavra) || !strcmp(pai->esq->palavra, no->palavra)) return pai;
+
+
+		aux = encontra_pai(raiz->esq, no);
+		if(aux) return aux;
+
+		return encontra_pai(pai->dir, no);
+	}
+
+	return NULL;
 }
