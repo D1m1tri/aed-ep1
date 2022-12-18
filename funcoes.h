@@ -29,7 +29,7 @@ typedef struct {	//armazenar o texto de forma integral
 typedef struct _no_arvore_ {
 	int* linhas;
 	char* palavra;
-	int contador;
+	int aparicoes;
 	int posLivre;
 	struct _no_arvore_ * esq;
 	struct _no_arvore_ * dir;
@@ -200,81 +200,67 @@ Arvore * cria_arvore(){
 	return arvore;
 }
 
-No * busca_rec(No * no, char* palavra){
+No * busca_bin_rec(No * no, char* palavra){
 
-	No * aux;
-	
 	if(no){
 
-		if(strcmp(no->palavra, palavra) == 0) return no;
-
-		aux = busca_rec(no->esq, palavra);
-		if(aux) return aux;
-	
-		return busca_rec(no->esq, palavra);
-
+		if(!strcmp(no->palavra, palavra)) return no;
+		if(strcmp(no->palavra, palavra) < 0) return busca_bin_rec(no->esq, palavra);
+		return busca_bin_rec(no->dir, palavra);
 	}
 
 	return NULL;
 }
 
-No * busca(Arvore * arvore, char* palavra){
+No * busca_bin(Arvore * arvore, char* palavra){
 	
-	return busca_rec(arvore->raiz, palavra);	
+	return busca_bin_rec(arvore->raiz, palavra);	
 }
 
-void insere(Arvore * arvore, No * pai, char* palavra, int linha){
+void insere_ord_rec(No * raiz, No * novo, int linha){
+
+	if(strcmp(raiz->palavra, novo->palavra)){
+		novo->posLivre = 0;
+		novo->aparicoes = 0;
+		if(strcmp(raiz->palavra, novo->palavra) < 0){
+
+			if(raiz->esq) insere_ord_rec(raiz->esq, novo, linha);
+			else raiz->esq = novo;
+		}
+		else{
+			if(raiz->dir) insere_ord_rec(raiz->dir, novo, linha);
+			else raiz->dir = novo;
+		}
+	}
+	if((!novo->linhas[novo->posLivre-1] == linha)){
+		novo->linhas[novo->posLivre] = linha;
+		novo->posLivre++;
+	}
+	novo->aparicoes++;
+
+}
+
+void insere_ord(Arvore * arvore, char* palavra, int linha){
 
 	No* novo = (No *) malloc(sizeof(No));
 	
 	strcpy (novo->palavra, palavra);
 	novo->esq = novo->dir = NULL;
-
-	if(!busca(arvore, palavra)){
-		novo->contador = 1;
-		novo->posLivre = 0;
-		novo->linhas[novo->posLivre] = linha;
-		novo->posLivre++;
-
-		if(pai){
-
-			if(strcmp(pai->palavra, palavra) > 0){
-				novo->esq = pai->esq;
-				pai->esq = novo;
-			}
-			else{
-				novo->esq = pai->dir;
-				pai->dir = novo;
-			}
-		}
-		else{
-			novo->esq = arvore->raiz;
-			arvore->raiz = novo;
-		}
-	}
-	else{
-		novo = busca(arvore, palavra);
-		novo->contador++;
-		novo->linhas[novo->posLivre] = linha;
-		novo->posLivre++;
-	}
 	
-	
+	if(arvore->raiz) insere_ord_rec(arvore->raiz, novo, linha);
+		
+	arvore->raiz = novo;
+
 }
-No * encontra_pai(No * pai, No * no){
-	
-	No* aux;
 
-	if(pai){
+No * encontra_pai_ord(No * raiz, No * no){
 
-		if(!strcmp(pai->esq->palavra, no->palavra) || !strcmp(pai->esq->palavra, no->palavra)) return pai;
+	if(raiz){
 
+		if(raiz->esq == no || raiz->dir == no) return raiz;
 
-		aux = encontra_pai(pai->esq, no);
-		if(aux) return aux;
+		if(strcmp(raiz->palavra, no->palavra) < 0) return encontra_pai_ord(raiz->esq, no);
 
-		return encontra_pai(pai->dir, no);
+		if(strcmp(raiz->palavra, no->palavra) > 0) return encontra_pai_ord(raiz->dir, no);
 	}
-
-	return NULL;
 }
