@@ -214,16 +214,16 @@ No * busca_bin(Arvore * arvore, char* palavra){
 
 void insere_ord_rec(No * raiz, No * novo, int linha){
 
-	if(strcmp(raiz->palavra, no->palavra)){
+	if(strcmp(raiz->palavra, novo->palavra)){
 		novo->posLivre = 0;
 		novo->aparicoes = 0;
-		if(strcmp(raiz->palavra, no->palavra) < 0){
+		if(strcmp(raiz->palavra, novo->palavra) < 0){
 
-			if(raiz->esq) return insere_ord_rec(raiz->esq, novo);
+			if(raiz->esq) insere_ord_rec(raiz->esq, novo, linha);
 			else raiz->esq = novo;
 		}
 		else{
-			if(raiz->dir) return insere_ord_rec(raiz->dir, novo);
+			if(raiz->dir) insere_ord_rec(raiz->dir, novo, linha);
 			else raiz->dir = novo;
 		}
 	}
@@ -242,10 +242,10 @@ void insere_ord(Arvore * arvore, char* palavra, int linha){
 	strcpy (novo->palavra, palavra);
 	novo->esq = novo->dir = NULL;
 	
-	if(arvore->raiz) return insere_ord_rec(arvore->raiz, novo, linha);
+	if(arvore->raiz) insere_ord_rec(arvore->raiz, novo, linha);
 		
 	arvore->raiz = novo;
-	return TRUE;
+
 }
 
 No * encontra_pai_ord(No * raiz, No * no){
@@ -258,6 +258,4 @@ No * encontra_pai_ord(No * raiz, No * no){
 
 		if(strcmp(raiz->palavra, no->palavra) > 0) return encontra_pai_ord(raiz->dir, no);
 	}
-		
-	return NULL;
 }
