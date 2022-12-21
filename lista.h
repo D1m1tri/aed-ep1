@@ -31,6 +31,7 @@ void createList(Lista * atual, Lista * substituto){	//cria um Nó novo e zera os
 		atual->proximo = substituto;
 		atual->existeProximo=1;
 	}
+	atual->palavra = NULL;
 	atual->numLinhas = 0;
 }
 

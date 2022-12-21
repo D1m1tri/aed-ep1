@@ -73,7 +73,7 @@ void linhaEmLista(char linha[], Inicio * lista, Arvore * arvore, int numLinha, i
 		if(c>64 && c<91){
 			c+=32;
 		}
-		if(c<97 || c>122){
+		if(c=='.'|| c==','|| c=='-'|| c=='/'|| c=='!'|| c=='?'|| c==';'|| c==':'|| c=='('|| c==')'|| c=='\0'|| c=='\n'|| c=='"'|| c=='"' || c==' '){
 			if(strlen(palavra)<1){
 				palavra[0]='\0';
 			}
@@ -97,13 +97,13 @@ void linhaEmLista(char linha[], Inicio * lista, Arvore * arvore, int numLinha, i
 
 Lista * buscaLista(Lista * atual, char * palavra){
 
-	while(strcmp(atual->proximo->palavra, palavra) != 0){
-		if(atual->proximo->proximo == NULL){
-			return NULL;
-		}	
+	while(atual->existeProximo){
 		atual = atual->proximo;
+		if(strcmp(atual->palavra, palavra)==0){
+			return atual;
+		}	
 	}
-	return atual->proximo;
+	return NULL;
 }
 
 void busca(Texto texto, Lista * lista, Arvore * arvore,char palavra[], int Lista){
@@ -113,6 +113,29 @@ void busca(Texto texto, Lista * lista, Arvore * arvore,char palavra[], int Lista
 		tempo = Clock(0);
 		if(lista == NULL){
 			printf("Palavra '%s' não encontrada.\n", palavra);
+		}
+		else{
+			printf("Existem %i ocorrências da palavra '%s' na(s) seguinte(s) linha(s):\n", lista->numLinhas,palavra);
+			Linhas * linha = lista->linhas;
+			while(linha->existeProximo){
+				linha = linha->proximo;
+				printf("%05i: %s", linha->linha+1, texto.linha[linha->linha]);
+			}
+		}
+	}
+	else{
+		No * no = busca_bin(arvore, palavra);
+		tempo = Clock(0);
+		if(no == NULL){
+			printf("Palavra '%s' não encontrada.\n",palavra);
+		}
+		else{
+			printf("Existem %i ocorrências da palavra '%s' na(s) seguinte(s) linha(s):\n", no->aparicoes,palavra);
+			LinhasArvore * linha = no->linhas;
+			while(linha->existeProximo){
+				linha = linha->proximo;
+				printf("%05i: %s", linha->linha+1, texto.linha[linha->linha]);
+			}
 		}
 	}
 	printf("Tempo de busca: %f ms\n", tempo);

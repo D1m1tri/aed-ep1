@@ -26,6 +26,8 @@ int main(int argc, char ** argv){
 	Inicio lista;
 	ini(&lista);
 
+	Arvore * arvore = cria_arvore();
+
 	FILE *arq;
 	arq = fopen(argv[1], "r");
 	if(arq == NULL){
@@ -40,7 +42,7 @@ int main(int argc, char ** argv){
 	int lineNum = getText(&texto, arq);
 	fclose(arq);
 	for(int i=0;i<lineNum; i++){
-		linhaEmLista(texto.linha[i], &lista, NULL, i, Lista);
+		linhaEmLista(texto.linha[i], &lista, arvore, i, Lista);
 	}
 	tempo = Clock(0);
 	printf("Número de linhas no arquivo: %i\n", lineNum);
@@ -54,7 +56,15 @@ int main(int argc, char ** argv){
 		scanf("%s", &action);
 		if(!strcmp(action, "busca")){
 			scanf("%s", &word);
-			busca(texto, lista.lista, NULL, word, Lista);
+			busca(texto, lista.lista, arvore, word, Lista);
+		}
+		else{
+			if(!strcmp(action,"fim")){
+				break;
+			}
+			else{
+				printf("Opção inválida!");
+			}
 		}
 	}
 		

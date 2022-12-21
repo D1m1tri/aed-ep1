@@ -19,11 +19,6 @@ typedef struct {
 
 
 
-Arvore * cria_arvore(){				// cria a base da Arvore
-	Arvore * arvore = (Arvore *) malloc (sizeof(Arvore));
-	arvore->raiz = (No *) malloc(sizeof(No));	
-	return arvore;
-}
 
 
 
@@ -52,6 +47,12 @@ No * criarNo(){					// cria um novo Nó e retorna seu ponteiro
 	novo->linhas = (LinhasArvore *) malloc(sizeof(LinhasArvore));
 	novo->aparicoes = 0;
 	return novo;
+}
+
+Arvore * cria_arvore(){				// cria a base da Arvore
+	Arvore * arvore = (Arvore *) malloc (sizeof(Arvore));
+	arvore->raiz = criarNo();	
+	return arvore;
 }
 
 void insertLineArvore(LinhasArvore * linhaAtual, int lineNum){
