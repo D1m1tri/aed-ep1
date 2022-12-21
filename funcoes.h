@@ -57,9 +57,9 @@ int getText(Texto *texto, FILE *arq){ //salva as linhas do arquivo externo na me
 	return i;
 }
 
-void linhaEmLista(char linha[], Inicio * lista, int numLinha){ //separação das palavras nas linhas
+void linhaEmLista(char linha[], Inicio * lista, Arvore * arvore, int numLinha, int Lista){ //separação das palavras nas linhas
 	static int doOnce=0;				       //para uso na lista ligada
-	if(!doOnce){
+	if(!doOnce && Lista){
 		lista->lista->existeProximo = 0;
 		doOnce++;
 	}
@@ -78,7 +78,12 @@ void linhaEmLista(char linha[], Inicio * lista, int numLinha){ //separação das
 				palavra[0]='\0';
 			}
 			else{
-				InsertOnList(lista->lista, palavra, numLinha);
+				if(Lista){
+					InsertOnList(lista->lista, palavra, numLinha);
+				}
+				else{
+					insere_ord(arvore, palavra, numLinha);
+				}
 				for(int z=0;z<50;z++){
 					palavra[z]='\0';
 				}
@@ -90,3 +95,25 @@ void linhaEmLista(char linha[], Inicio * lista, int numLinha){ //separação das
 	}
 }
 
+Lista * buscaLista(Lista * atual, char * palavra){
+
+	while(strcmp(atual->proximo->palavra, palavra) != 0){
+		if(atual->proximo->proximo == NULL){
+			return NULL;
+		}	
+		atual = atual->proximo;
+	}
+	return atual->proximo;
+}
+
+void busca(Texto texto, Lista * lista, Arvore * arvore,char palavra[], int Lista){
+	float tempo = Clock(1);
+	if(Lista){
+		lista = buscaLista(lista, palavra);
+		tempo = Clock(0);
+		if(lista == NULL){
+			printf("Palavra '%s' não encontrada.\n", palavra);
+		}
+	}
+	printf("Tempo de busca: %f ms\n", tempo);
+}
