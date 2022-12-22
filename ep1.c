@@ -26,7 +26,8 @@ int main(int argc, char ** argv){
 	Inicio lista;
 	ini(&lista);
 
-	Arvore * arvore = cria_arvore();
+	Arvore * raiz = (Arvore *) malloc(sizeof(Arvore));
+	raiz->raiz = NULL;
 
 	FILE *arq;
 	arq = fopen(argv[1], "r");
@@ -42,13 +43,13 @@ int main(int argc, char ** argv){
 	int lineNum = getText(&texto, arq);
 	fclose(arq);
 	for(int i=0;i<lineNum; i++){
-		linhaEmLista(texto.linha[i], &lista, arvore, i, Lista);
+		linhaEmLista(texto.linha[i], &lista, raiz, i, Lista);
 	}
 	tempo = Clock(0);
 	printf("Número de linhas no arquivo: %i\n", lineNum);
 	printf("Tempo para carregar o arquivo e construir o indice: %.2f ms\n", tempo);
-	//printf("\n");
-	//printAll(&texto, &lista, lineNum);
+	printf("\n");
+	printAll(&texto, lista.lista, raiz, lineNum, Lista);
 	while(1){
 		printf("> ");
 		char action[10];
@@ -56,7 +57,7 @@ int main(int argc, char ** argv){
 		scanf("%s", &action);
 		if(!strcmp(action, "busca")){
 			scanf("%s", &word);
-			busca(texto, lista.lista, arvore, word, Lista);
+			busca(texto, lista.lista, raiz->raiz, word, Lista);
 		}
 		else{
 			if(!strcmp(action,"fim")){

@@ -17,26 +17,31 @@ float Clock(int reset){ //função para medir o tempo
 	return 1000*(((float)(endTime-startTime))/CLOCKS_PER_SEC);
 }
 
-void printAll(Texto * texto, Inicio * lista, int lineNum){ //imprime tudo o que está armazenado
+void printAll(Texto * texto, Lista * atual, Arvore * raiz, int lineNum, int Lista){ //imprime tudo o que está armazenado
 	for(int i=0; i<lineNum;i++){
 		printf("%02i: %s",i,texto->linha[i]);
 	}
-	Lista * atual = lista->lista;
-	printf("\npalavra		aparições	linhas\n\n");
-	while(atual->existeProximo == 1){
-		atual = atual->proximo;
-		if(strlen(atual->palavra)<8){
-			printf("%s		    %i		",atual->palavra,atual->numLinhas);
+	if(Lista){
+		printf("\npalavra		aparições	linhas\n\n");
+		while(atual->existeProximo == 1){
+			atual = atual->proximo;
+			if(strlen(atual->palavra)<8){
+				printf("%s		    %i		",atual->palavra,atual->numLinhas);
+			}
+			else{
+				printf("%s	    %i		",atual->palavra,atual->numLinhas);
+			}
+			Linhas * linAtual = atual->linhas;
+			while(linAtual->existeProximo==1){
+				linAtual = linAtual->proximo;
+				printf("%i, ",linAtual->linha);
+			}
+			printf("\n");
 		}
-		else{
-			printf("%s	    %i		",atual->palavra,atual->numLinhas);
-		}
-		Linhas * linAtual = atual->linhas;
-		while(linAtual->existeProximo==1){
-			linAtual = linAtual->proximo;
-			printf("%i, ",linAtual->linha);
-		}
-		printf("\n");
+	}
+	else{
+		printf("\npalavra		aparições	linhas\n\n");
+		printArvore(raiz->raiz);
 	}
 	printf("\n");
 }
@@ -57,7 +62,7 @@ int getText(Texto *texto, FILE *arq){ //salva as linhas do arquivo externo na me
 	return i;
 }
 
-void linhaEmLista(char linha[], Inicio * lista, Arvore * arvore, int numLinha, int Lista){ //separação das palavras nas linhas
+void linhaEmLista(char linha[], Inicio * lista, Arvore * raiz, int numLinha, int Lista){ //separação das palavras nas linhas
 	static int doOnce=0;				       //para uso na lista ligada
 	if(!doOnce && Lista){
 		lista->lista->existeProximo = 0;
@@ -82,7 +87,8 @@ void linhaEmLista(char linha[], Inicio * lista, Arvore * arvore, int numLinha, i
 					InsertOnList(lista->lista, palavra, numLinha);
 				}
 				else{
-					insere_ord(arvore, palavra, numLinha);
+					printf("%s	",palavra);
+					insere_ord(raiz, palavra, numLinha);
 				}
 				for(int z=0;z<50;z++){
 					palavra[z]='\0';
@@ -106,7 +112,7 @@ Lista * buscaLista(Lista * atual, char * palavra){
 	return NULL;
 }
 
-void busca(Texto texto, Lista * lista, Arvore * arvore,char palavra[], int Lista){
+void busca(Texto texto, Lista * lista, No * raiz,char palavra[], int Lista){
 	float tempo = Clock(1);
 	if(Lista){
 		lista = buscaLista(lista, palavra);
@@ -124,13 +130,13 @@ void busca(Texto texto, Lista * lista, Arvore * arvore,char palavra[], int Lista
 		}
 	}
 	else{
-		No * no = busca_bin(arvore, palavra);
+		No * no = busca_bin(raiz, palavra);
 		tempo = Clock(0);
 		if(no == NULL){
 			printf("Palavra '%s' não encontrada.\n",palavra);
 		}
 		else{
-			printf("Existem %i ocorrências da palavra '%s' na(s) seguinte(s) linha(s):\n", no->aparicoes,palavra);
+			printf("Existem %i ocorrências da palavra '%s' na(s) seguinte(s) linha(s):\n", no->numLinhas,palavra);
 			LinhasArvore * linha = no->linhas;
 			while(linha->existeProximo){
 				linha = linha->proximo;
