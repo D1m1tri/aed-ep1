@@ -143,5 +143,5 @@ void busca(Texto texto, Lista * lista, No * raiz,char palavra[], int Lista){	// 
 			}
 		}
 	}
-	printf("Tempo de busca: %f ms\n", tempo);
+	printf("Tempo de busca: %.3f ms\n", tempo);
 }

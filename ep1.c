@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "funcoes.h"
 
 int main(int argc, char ** argv){
@@ -55,17 +56,21 @@ int main(int argc, char ** argv){
 		char action[10];
 		char word[50];
 		scanf("%s", &action);
+		if(!strcmp(action,"fim")){
+			break;
+		}
+		scanf("%s", &word);
+		for(int i=0; action[i]; i++){
+			action[i] = (char) tolower((int)action[i]);
+		}
+		for(int i=0; word[i]; i++){
+			word[i] = tolower(word[i]);
+		}
 		if(!strcmp(action, "busca")){
-			scanf("%s", &word);
 			busca(texto, lista.lista, raiz->raiz, word, Lista);
 		}
 		else{
-			if(!strcmp(action,"fim")){
-				break;
-			}
-			else{
-				printf("Opção inválida!");
-			}
+			printf("Opção inválida!\n");
 		}
 	}
 		
