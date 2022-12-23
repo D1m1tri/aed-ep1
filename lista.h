@@ -35,7 +35,7 @@ void createList(Lista * atual, Lista * substituto){	//cria um Nó novo e zera os
 	atual->numLinhas = 0;
 }
 
-void insertLine(Linhas * linhaAtual, int lineNum){
+void insertLine(Linhas * linhaAtual, int lineNum){	// insere uma linha no Nó
 	int noRepeat = 1;
 	while(linhaAtual->existeProximo == 1){
 		linhaAtual = linhaAtual->proximo;
@@ -52,7 +52,7 @@ void insertLine(Linhas * linhaAtual, int lineNum){
 	}
 }
 
-void InsertOnList(Lista * atual, char palavra[], int lineNum){
+void InsertOnList(Lista * atual, char palavra[], int lineNum){ // insere uma palavra na lista
 	int doit = 1;
 	while(doit){
 		if(atual->existeProximo == 0){

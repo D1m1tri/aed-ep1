@@ -1,10 +1,10 @@
-typedef struct linha {
+typedef struct linha {		// linhas em que a palavra aparece
 	int linha;
 	struct linha * proximo;
 	int existeProximo;
 } LinhasArvore;
 
-typedef struct no {
+typedef struct no {		// informações sobre a palavra
 	int numLinhas;
 	LinhasArvore * linhas;
 	char * palavra;
@@ -12,15 +12,9 @@ typedef struct no {
 	struct no * dir;
 } No;
 
-typedef struct arvore {
+typedef struct arvore {		// base da árvore binária
 	No * raiz;
 } Arvore;
-
-Arvore * criarArvore(){
-	Arvore * novo = (Arvore *) malloc(sizeof(Arvore));;
-	novo->raiz = NULL;
-	return novo;
-}
 
 No * criarNo(char * palavra){					// cria um novo Nó e retorna seu ponteiro
 	No * novo = (No *) malloc(sizeof(No));
@@ -54,20 +48,20 @@ void insertLineArvore(LinhasArvore * linhaAtual, int lineNum){	// insere uma lin
 	}
 }
 
-void insereOrd(No * raiz, char * palavra, int linha){// insere uma palavra nova
-	printf("%s\n", raiz->palavra);
+void insereOrd(No * raiz, char * palavra, int linha){		// insere uma palavra nova (recursão)
 	if(strcmp(raiz->palavra, palavra) == 0){
 		raiz->numLinhas++;
 		insertLineArvore(raiz->linhas, linha);
 	}
 	else{
-		if(strcmp(raiz->palavra, palavra) < 0){
+		if(strcmp(raiz->palavra, palavra) > 0){
 			if(raiz->esq){
 				insereOrd(raiz->esq, palavra, linha);
 			}
 			else{
 				raiz->esq = criarNo(palavra);
-				insertLineArvore(raiz->dir->linhas, linha);
+				raiz->esq->numLinhas++;
+				insertLineArvore(raiz->esq->linhas, linha);
 			}
 		}
 		else{
@@ -76,13 +70,14 @@ void insereOrd(No * raiz, char * palavra, int linha){// insere uma palavra nova
 			}
 			else{
 				raiz->dir = criarNo(palavra);
+				raiz->dir->numLinhas++;
 				insertLineArvore(raiz->dir->linhas, linha);
 			}
 		}
 	}
 }
 
-void insere_ord(Arvore * raiz, char * palavra, int linha){
+void insere_ord(Arvore * raiz, char * palavra, int linha){	// insere uma palavra nova
 	if(raiz->raiz){
 		insereOrd(raiz->raiz, palavra, linha);
 	}
@@ -93,12 +88,12 @@ void insere_ord(Arvore * raiz, char * palavra, int linha){
 }
 
 
-No * busca_bin(No * raiz, char* palavra){	// busca por uma palavra (parte recursiva)
+No * busca_bin(No * raiz, char* palavra){	// busca por uma palavra
 	if(raiz){
 		if(strcmp(raiz->palavra, palavra) == 0){
 			return raiz;
 		}
-		if(strcmp(raiz->palavra, palavra) < 0){
+		if(strcmp(raiz->palavra, palavra) > 0){
 			return busca_bin(raiz->esq, palavra);
 		}
 		else{
@@ -110,23 +105,23 @@ No * busca_bin(No * raiz, char* palavra){	// busca por uma palavra (parte recurs
 	}
 }
 
-void printArvore(No * raiz){
+void printArvore(No * raiz){	// imprime conteúdo da árvore	*** APENAS PARA DEBUG ***
 	if(raiz->esq){
 		printArvore(raiz->esq);
-	}
-	if(raiz->dir){
-		printArvore(raiz->dir);
 	}
 	if(strlen(raiz->palavra) < 8){
 		printf("%s		   %i		", raiz->palavra, raiz->numLinhas);
 	}
 	else{
-		printf("%s	    %i		", raiz->palavra, raiz->numLinhas);
+		printf("%s	   %i		", raiz->palavra, raiz->numLinhas);
 	}
-	/*LinhasArvore * linAtual = raiz->linhas;
+	LinhasArvore * linAtual = raiz->linhas;
 	while(linAtual->existeProximo==1){
 		linAtual = linAtual->proximo;
 		printf("%i, ", linAtual->linha);
-	}*/
+	}
 	printf("\n");
+	if(raiz->dir){
+		printArvore(raiz->dir);
+	}
 }

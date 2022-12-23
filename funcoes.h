@@ -17,9 +17,9 @@ float Clock(int reset){ //função para medir o tempo
 	return 1000*(((float)(endTime-startTime))/CLOCKS_PER_SEC);
 }
 
-void printAll(Texto * texto, Lista * atual, Arvore * raiz, int lineNum, int Lista){ //imprime tudo o que está armazenado
+void printAll(Texto * texto, Lista * atual, Arvore * raiz, int lineNum, int Lista){ //imprime tudo o que está armazenado	*** APENAS PARA DEBUG ***
 	for(int i=0; i<lineNum;i++){
-		printf("%02i: %s",i,texto->linha[i]);
+		printf("%5i: %s",i,texto->linha[i]);
 	}
 	if(Lista){
 		printf("\npalavra		aparições	linhas\n\n");
@@ -87,7 +87,6 @@ void linhaEmLista(char linha[], Inicio * lista, Arvore * raiz, int numLinha, int
 					InsertOnList(lista->lista, palavra, numLinha);
 				}
 				else{
-					printf("%s	",palavra);
 					insere_ord(raiz, palavra, numLinha);
 				}
 				for(int z=0;z<50;z++){
@@ -101,7 +100,7 @@ void linhaEmLista(char linha[], Inicio * lista, Arvore * raiz, int numLinha, int
 	}
 }
 
-Lista * buscaLista(Lista * atual, char * palavra){
+Lista * buscaLista(Lista * atual, char * palavra){	// busca por uma palavra na lista ligada
 
 	while(atual->existeProximo){
 		atual = atual->proximo;
@@ -112,7 +111,7 @@ Lista * buscaLista(Lista * atual, char * palavra){
 	return NULL;
 }
 
-void busca(Texto texto, Lista * lista, No * raiz,char palavra[], int Lista){
+void busca(Texto texto, Lista * lista, No * raiz,char palavra[], int Lista){	// busca por uma palavra no geral
 	float tempo = Clock(1);
 	if(Lista){
 		lista = buscaLista(lista, palavra);

@@ -48,8 +48,8 @@ int main(int argc, char ** argv){
 	tempo = Clock(0);
 	printf("Número de linhas no arquivo: %i\n", lineNum);
 	printf("Tempo para carregar o arquivo e construir o indice: %.2f ms\n", tempo);
-	printf("\n");
-	printAll(&texto, lista.lista, raiz, lineNum, Lista);
+	//printf("\n");
+	//printAll(&texto, lista.lista, raiz, lineNum, Lista); // *** APENAS PARA DEBUG ***
 	while(1){
 		printf("> ");
 		char action[10];
